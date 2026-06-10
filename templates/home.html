@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Meine digitale Bibliothek</title>
+  </head>
+  <body>
+
+    <h1>Meine digitale Bibliothek 📚</h1>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <p style="color: blue; font-weight: bold; padding: 10px; background-color: #e6f2ff; border-radius: 5px;">
+            {{ message }}
+          </p>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <p>
+      <a href="/add_author">Autor hinzufügen</a> | 
+      <a href="/add_book">Buch hinzufügen</a>
+    </p>
+
+    <div>
+      <strong>Sortieren nach:</strong>
+      <a href="/?sort_by=title">Buchtitel</a> | 
+      <a href="/?sort_by=author">Autorenname</a>
+    </div>
+
+    <form action="/" method="GET" style="margin-top: 15px;">
+      <input type="text" name="search" placeholder="Buch suchen..." value="{{ request.args.get('search', '') }}">
+      <button type="submit">Suchen</button>
+      {% if request.args.get('search') %}
+        <a href="/" style="margin-left: 10px; color: red;">Suche zurücksetzen</a>
+      {% endif %}
+    </form>
+
+    <hr>
+
+    {% for book in books %}
+    <div style="margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px;">
+      <h3>{{ book.title }}</h3>
+      
+      <p><strong>Autor:</strong> 
+        {% if book.author %}
+          {{ book.author.name }}
+        {% else %}
+          Unbekannter Autor
+        {% endif %}
+      </p>
+      
+      <p><strong>Erscheinungsjahr:</strong> {{ book.publication_year }}</p>
+      <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+      
+      {% if book.isbn %}
+        <img src="https://covers.openlibrary.org/b/isbn/{{ book.isbn }}-M.jpg" alt="Cover fuer {{ book.title }}" style="max-height: 150px;"><br><br>
+      {% endif %}
+
+      <form action="/book/{{ book.id }}/delete" method="POST" onsubmit="return confirm('Möchtest du dieses Buch wirklich löschen?');">
+        <button type="submit" style="background-color: #ff4d4d; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px;">
+          Buch löschen ❎
+        </button>
+      </form>
+    </div>
+    {% endfor %}
+
+  </body>
+</html>
