@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+
 class Author(db.Model):
     __tablename__ = 'authors'
 
@@ -12,7 +13,7 @@ class Author(db.Model):
 
     def __str__(self):
         return f"Author {self.name}"
-    
+
     def __repr__(self):
         return f"<Author {self.id}>"
 
@@ -21,7 +22,7 @@ class Book(db.Model):
     __tablename__ = 'books'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    isbn = db.Column(db.String)
+    isbn = db.Column(db.String, unique=True, nullable=False)  # Eindeutige ISBN erzwingen
     title = db.Column(db.String, nullable=False)
     publication_year = db.Column(db.Integer)
 
@@ -33,6 +34,6 @@ class Book(db.Model):
 
     def __str__(self):
         return f" Book {self.title}"
-    
+
     def __repr__(self):
         return f"<Book {self.id}>"
